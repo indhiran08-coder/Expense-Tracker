@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="application.ExpenseController"
+            prefHeight="500.0" prefWidth="700.0">
+
+    <top>
+        <Label text="Expense Tracker 💰" textAlignment="CENTER" BorderPane.alignment="CENTER">
+            <font>
+                <Font size="36.0" />
+            </font>
+        </Label>
+    </top>
+
+    <left>
+        <VBox spacing="10.0" prefWidth="250.0" BorderPane.alignment="CENTER">
+            <padding><Insets top="20.0" left="15.0" right="10.0"/></padding>
+            <children>
+                <Label text="Category" />
+                <TextField fx:id="categoryField" promptText="e.g. Food" />
+
+                <Label text="Amount" />
+                <TextField fx:id="amountField" promptText="e.g. 500" />
+
+                <Label text="Description" />
+                <TextField fx:id="descriptionField" promptText="e.g. Lunch at cafe" />
+
+                <Label text="Date" />
+                <DatePicker fx:id="datePicker" />
+
+                <Button text="Add Expense" fx:id="addButton" onAction="#addExpense"/>
+                <Button text="Update" fx:id="updateButton" onAction="#updateExpense"/>
+                <Button text="Delete" fx:id="deleteButton" onAction="#deleteExpense"/>
+
+                <Label fx:id="statusLabel" text="Status messages appear here" />
+            </children>
+        </VBox>
+    </left>
+
+    <center>
+        <TableView fx:id="expenseTable" prefHeight="300.0" prefWidth="400.0">
+            <columns>
+                <TableColumn fx:id="colCategory" text="Category" prefWidth="100.0" />
+                <TableColumn fx:id="colAmount" text="Amount" prefWidth="100.0" />
+                <TableColumn fx:id="colDescription" text="Description" prefWidth="150.0" />
+                <TableColumn fx:id="colDate" text="Date" prefWidth="100.0" />
+            </columns>
+        </TableView>
+    </center>
+</BorderPane>
