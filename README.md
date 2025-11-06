@@ -1,79 +1,53 @@
-<!-- ========================================================= -->
-<!-- 🎨 EXPENSE TRACKER - GITHUB README FILE BY INDHIRAN S     -->
-<!-- ========================================================= -->
+# 💰 Expense Tracker – JavaFX + SQLite
 
-<h1 align="center">💰 Expense Tracker</h1>
-<h3 align="center">A Modern JavaFX + SQLite Desktop Application for Smart Expense Management</h3>
+### 🔹 Smart Desktop Application to Manage Your Daily Expenses with Balance Tracking and Salary Management
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Built%20With-JavaFX-blue?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Database-SQLite-orange?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Language-Java-yellow?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" />
-</p>
+Expense Tracker is a **JavaFX-based personal finance management tool** that allows users to record, update, and delete daily expenses while automatically calculating running balances based on their total monthly salary.  
+Built with **JavaFX, SQLite**, and **JDBC**, this lightweight yet powerful application provides both visual insights and persistent storage of your spending data.
 
 ---
 
-## 🧾 Overview
+## 🧩 Features
 
-**Expense Tracker 💰** is a powerful and user-friendly **JavaFX desktop application** that helps you record, manage, and analyze your daily expenses — all stored permanently using **SQLite**.  
-With its **dark-themed UI**, **real-time total expense updates**, and **intuitive controls**, it offers the perfect blend of functionality and elegance.  
+✨ **Add, Edit, and Delete Expenses**  
+Easily add expense entries with a category, amount, description, and date.
 
-This project showcases **end-to-end JavaFX development** — from sleek UI design to efficient backend integration — making it a great example for students, professionals, and developers learning **JavaFX + JDBC**.
+🏦 **Salary Integration**  
+Input your monthly salary once — the app automatically calculates your remaining balance as you add or edit expenses.
 
----
+📊 **Running Balance per Transaction**  
+Each expense row dynamically updates the **running balance** (salary - total expenses up to that point).
 
-## 🌟 Features
+💾 **SQLite Database Storage**  
+All expenses are permanently saved in a local SQLite database (`expenses.db`), ensuring your data persists across sessions.
 
-✅ **Add / Edit / Delete Expenses**  
-Easily manage your expense records with a clean and interactive interface.
+📈 **Auto-Updating Database Schema**  
+No need to recreate your database — the app automatically adds new columns (`balance`, `totalsalary`) if missing.
 
-✅ **Permanent Storage with SQLite**  
-All data is saved locally inside `expenses.db` and automatically loaded every time you open the app.
+💬 **Real-Time Feedback**  
+Displays status messages for every operation (Add, Update, Delete) directly in the UI.
 
-✅ **Search & Filter in Real-Time**  
-Type in the search bar to instantly filter expenses by category or description.
-
-✅ **Dynamic Total Expense Display**  
-Your total spending automatically updates whenever you add, update, or delete an expense.
-
-✅ **Dark-Themed Modern UI**  
-Built using JavaFX CSS with gradient backgrounds, glowing fields, and smooth animations.
-
-✅ **Reload Data Instantly**  
-Syncs the table with the database in one click — no need to restart the app.
+🧮 **Dynamic Remaining Balance Display**  
+Shows the final remaining balance at the bottom of the app for clear financial tracking.
 
 ---
 
-## 🧠 Tech Stack
+## 🏗️ Tech Stack
 
-| Layer | Technology |
-|--------|-------------|
-| **Frontend (UI)** | JavaFX, FXML, CSS |
-| **Backend (Logic)** | Java |
+| Layer | Technology Used |
+|--------|-----------------|
+| **Frontend** | JavaFX (FXML + CSS) |
+| **Backend** | Java (OOP + JDBC) |
 | **Database** | SQLite |
-| **Driver** | sqlite-jdbc-3.51.0.0.jar |
-| **SDK** | JavaFX SDK 25.0.1 |
-| **JDK Version** | 17 or later |
-| **IDE (optional)** | Eclipse / IntelliJ / VS Code |
-
----
-
-## 🧠 Tech Stack
-
-| Layer | Technology |
-|--------|-------------|
-| **Frontend (UI)** | JavaFX, FXML, CSS |
-| **Backend (Logic)** | Java |
-| **Database** | SQLite |
-| **Driver** | sqlite-jdbc-3.51.0.0.jar |
-| **SDK** | JavaFX SDK 25.0.1 |
-| **JDK Version** | 17 or later |
-| **IDE (optional)** | Eclipse / IntelliJ / VS Code |
+| **IDE Support** | Eclipse / IntelliJ / VS Code |
+| **UI Loader** | FXML with `ExpenseController.java` |
+| **Build Tools** | JavaFX SDK 25, sqlite-jdbc 3.51.0.0 |
 
 ---
 
 ## 📁 Folder Structure
+
+
 ExpenseTracker/
 │
 ├── src/
