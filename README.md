@@ -66,13 +66,12 @@ ExpenseTracker/
 ├── module-info.java
 └── expenses.db (auto-created SQLite database)
 
-| Column      | Type                  | Description                           |
-| ----------- | --------------------- | ------------------------------------- |
-| id          | INTEGER (Primary Key) | Auto-generated ID                     |
-| category    | TEXT                  | Expense category (e.g., Food, Travel) |
-| amount      | REAL                  | Amount spent                          |
-| description | TEXT                  | Description of expense                |
-| date        | TEXT                  | Date of expense                       |
+| Category  | Amount | Description        | Date       | Balance | Total Salary |
+| --------- | ------ | ------------------ | ---------- | ------- | ------------ |
+| Groceries | 2000   | Daily essentials   | 2025-11-06 | 48000   | 50000        |
+| Rent      | 10000  | Monthly house rent | 2025-11-07 | 38000   | 50000        |
+| Travel    | 500    | Bus fare           | 2025-11-08 | 37500   | 50000        |
+
 
 🪶 License
 
