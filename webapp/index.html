@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Expense Tracker 💰</title>
+  <meta name="description" content="Smart personal finance manager – track expenses, monitor salary balance, and visualize spending patterns."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <!-- ========== TOAST ========== -->
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <!-- ========== HEADER ========== -->
+  <header class="header">
+    <div class="header-left">
+      <span class="logo-icon">💰</span>
+      <div>
+        <h1 class="header-title">Expense Tracker</h1>
+        <p class="header-sub">Track your spending · Master your finances</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="salary-wrapper">
+        <label for="salaryInput" class="salary-label">Monthly Salary (₹)</label>
+        <input type="number" id="salaryInput" class="salary-input" placeholder="e.g. 50000" min="0" />
+      </div>
+      <button class="btn btn-outline" onclick="openBudgetModal()" title="Set Budgets">
+        🎯 Budgets
+      </button>
+      <button id="exportBtn" class="btn btn-outline" title="Export to CSV">
+        📤 Export CSV
+      </button>
+      <!-- User chip -->
+      <div class="user-chip" id="userChip">
+        <span class="user-avatar" id="userAvatar">?</span>
+        <span class="user-name"  id="userName">Loading…</span>
+        <button class="btn-logout" id="logoutBtn" title="Sign Out">⏻</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== MAIN LAYOUT ========== -->
+  <main class="main-layout">
+
+    <!-- ===== SIDEBAR – FORM ===== -->
+    <aside class="sidebar">
+      <div class="card form-card">
+        <h2 class="card-title" id="formTitle">➕ Add Expense</h2>
+
+        <div class="form-group">
+          <label for="categoryInput">Category</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon">🏷️</span>
+            <input type="text" id="categoryInput" placeholder="e.g. Food, Rent, Travel" list="categoryList" autocomplete="off"/>
+            <datalist id="categoryList">
+              <option value="Food"/>
+              <option value="Rent"/>
+              <option value="Transport"/>
+              <option value="Entertainment"/>
+              <option value="Shopping"/>
+              <option value="Health"/>
+              <option value="Utilities"/>
+              <option value="Education"/>
+              <option value="Savings"/>
+              <option value="Other"/>
+            </datalist>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="amountInput">Amount (₹)</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon">₹</span>
+            <input type="number" id="amountInput" placeholder="e.g. 500" min="0" step="0.01"/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="descriptionInput">Description</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon">📝</span>
+            <input type="text" id="descriptionInput" placeholder="e.g. Lunch at café"/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="dateInput">Date</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon">📅</span>
+            <input type="date" id="dateInput"/>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button id="submitBtn" class="btn btn-primary" onclick="submitExpense()">
+            <span id="submitBtnText">➕ Add Expense</span>
+          </button>
+          <button id="cancelBtn" class="btn btn-ghost" onclick="cancelEdit()" style="display:none">✖ Cancel</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===== CONTENT AREA ===== -->
+    <section class="content-area">
+
+      <!-- Summary Cards -->
+      <div class="summary-grid">
+        <div class="summary-card card" id="cardSalary">
+          <div class="card-icon">💼</div>
+          <div class="card-info">
+            <span class="card-label">Monthly Salary</span>
+            <span class="card-value" id="summSalary">₹ 0.00</span>
+          </div>
+        </div>
+        <div class="summary-card card" id="cardTotal">
+          <div class="card-icon">💸</div>
+          <div class="card-info">
+            <span class="card-label">Total Expenses</span>
+            <span class="card-value danger" id="summTotal">₹ 0.00</span>
+          </div>
+        </div>
+        <div class="summary-card card" id="cardBalance">
+          <div class="card-icon">🏦</div>
+          <div class="card-info">
+            <span class="card-label">Remaining Balance</span>
+            <span class="card-value" id="summBalance">₹ 0.00</span>
+          </div>
+        </div>
+        <div class="summary-card card" id="cardTop">
+          <div class="card-icon">📌</div>
+          <div class="card-info">
+            <span class="card-label">Top Category</span>
+            <span class="card-value accent" id="summTop">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Budget Progress Bars (shown when budgets are set) -->
+      <div id="budgetSection" class="card budget-section" style="display:none">
+        <h2 class="card-title">🎯 Budget Tracker</h2>
+        <div id="budgetBars"></div>
+      </div>
+
+      <!-- Controls Bar -->
+      <div class="controls-bar card">
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchInput" placeholder="Search expenses…" oninput="renderTable()" />
+        </div>
+        <div class="filter-wrap">
+          <label for="filterCategory">Filter:</label>
+          <select id="filterCategory" onchange="renderTable()">
+            <option value="">All Categories</option>
+          </select>
+        </div>
+        <div class="sort-wrap">
+          <label for="sortBy">Sort:</label>
+          <select id="sortBy" onchange="renderTable()">
+            <option value="date-desc">Date ↓</option>
+            <option value="date-asc">Date ↑</option>
+            <option value="amount-desc">Amount ↓</option>
+            <option value="amount-asc">Amount ↑</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Expense Table -->
+      <div class="card table-card">
+        <div class="table-wrap">
+          <table id="expenseTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Category</th>
+                <th>Amount (₹)</th>
+                <th>Description</th>
+                <th>Date</th>
+                <th>Balance (₹)</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+          <div id="emptyState" class="empty-state" style="display:none">
+            <span class="empty-icon">🧾</span>
+            <p>No expenses yet. Add your first one!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chart Section -->
+      <div class="chart-card card">
+        <h2 class="card-title">📊 Spending Breakdown</h2>
+        <div class="chart-wrap">
+          <canvas id="spendingChart"></canvas>
+          <div id="legendWrap" class="legend-wrap"></div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- ========== DELETE MODAL ========== -->
+  <div id="deleteModal" class="modal-overlay" style="display:none">
+    <div class="modal-box">
+      <span class="modal-icon">🗑️</span>
+      <h3>Delete Expense?</h3>
+      <p id="deleteModalMsg">This action cannot be undone.</p>
+      <div class="modal-actions">
+        <button class="btn btn-danger" id="confirmDeleteBtn">Yes, Delete</button>
+        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== BUDGET MODAL ========== -->
+  <div id="budgetModal" class="modal-overlay" style="display:none">
+    <div class="modal-box budget-modal-box">
+      <span class="modal-icon">🎯</span>
+      <h3>Set Monthly Budgets</h3>
+      <p>Set a spending limit per category. A progress bar will appear on your dashboard.</p>
+      <div id="budgetInputsWrap" class="budget-inputs-wrap"></div>
+      <div class="budget-add-row">
+        <input type="text" id="budgetCatInput"    placeholder="Category (e.g. Food)" list="categoryList2"/>
+        <datalist id="categoryList2">
+          <option value="Food"/><option value="Rent"/><option value="Transport"/>
+          <option value="Entertainment"/><option value="Shopping"/><option value="Health"/>
+          <option value="Utilities"/><option value="Education"/><option value="Savings"/>
+          <option value="Other"/>
+        </datalist>
+        <input type="number" id="budgetAmtInput"  placeholder="Budget ₹" min="0" step="100"/>
+        <button class="btn btn-primary budget-add-btn" onclick="addBudgetRow()">+ Add</button>
+      </div>
+      <div class="modal-actions" style="margin-top:20px">
+        <button class="btn btn-primary" onclick="saveBudgets()">💾 Save Budgets</button>
+        <button class="btn btn-ghost"   onclick="closeBudgetModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
